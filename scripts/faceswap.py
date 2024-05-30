@@ -35,7 +35,7 @@ class FaceSwapScript(scripts.Script):
     def ui(self, is_img2img):
         with gr.Accordion(f"roop {version_flag}", open=False):
             with gr.Column():
-                img = gr.inputs.Image(type="pil")
+                img = gr.components.Image(type="pil")
                 enable = gr.Checkbox(False, placeholder="enable", label="Enable")
                 faces_index = gr.Textbox(
                     value="0",
@@ -52,7 +52,7 @@ class FaceSwapScript(scripts.Script):
                     face_restorer_visibility = gr.Slider(
                         0, 1, 1, step=0.1, label="Restore visibility"
                     )
-                upscaler_name = gr.inputs.Dropdown(
+                upscaler_name = gr.components.Dropdown(
                     choices=[upscaler.name for upscaler in shared.sd_upscalers],
                     label="Upscaler",
                 )
@@ -66,12 +66,12 @@ class FaceSwapScript(scripts.Script):
                     logger.warning(
                         "You should at least have one model in models directory, please read the doc here : https://github.com/s0md3v/sd-webui-roop/"
                     )
-                    model = gr.inputs.Dropdown(
+                    model = gr.components.Dropdown(
                         choices=models,
                         label="Model not found, please download one and reload automatic 1111",
                     )
                 else:
-                    model = gr.inputs.Dropdown(
+                    model = gr.components.Dropdown(
                         choices=models, label="Model", default=models[0]
                     )
 
@@ -141,12 +141,14 @@ class FaceSwapScript(scripts.Script):
         swap_in_source,
         swap_in_generated,
     ):
+        self.enable = enable
+        if not enable:
+            return
         self.source = img
         self.face_restorer_name = face_restorer_name
         self.upscaler_scale = upscaler_scale
         self.upscaler_visibility = upscaler_visibility
         self.face_restorer_visibility = face_restorer_visibility
-        self.enable = enable
         self.upscaler_name = upscaler_name
         self.swap_in_generated = swap_in_generated
         self.model = model
